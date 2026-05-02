@@ -1,4 +1,4 @@
-const { PORT = 19025 } = process.env;
+const { PORT = 19028 } = process.env;
 require("dotenv").config();
 const express = require("express");
 const routes = require("../routes");
@@ -16,7 +16,8 @@ app.use(
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "http://localhost:19025",
+  "http://localhost:19028",
+  "http://project.nabilaba.my.id",
   "https://project.nabilaba.my.id",
   process.env.FRONTEND_URL,
 ].filter(Boolean);
