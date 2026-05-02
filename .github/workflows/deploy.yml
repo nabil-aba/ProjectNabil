@@ -1,0 +1,66 @@
+name: 🚀 Deploy website on push
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Get latest code
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: yarn
+          cache-dependency-path: |
+            frontend/yarn.lock
+            backend/yarn.lock
+
+      - name: Install Frontend Dependencies
+        run: yarn install
+        working-directory: frontend
+
+      - name: Build Frontend
+        run: yarn build
+        working-directory: frontend
+
+      - name: Install Backend Dependencies
+        run: yarn install
+        working-directory: backend
+
+      - name: Prepare deploy folder
+        run: |
+          mkdir -p deploy
+
+          # 1. Salin seluruh isi backend ke root folder deploy (tanpa node_modules)
+          rsync -av \
+            --exclude=node_modules \
+            --exclude=.git \
+            --exclude=.github \
+            backend/ deploy/
+            
+          # 2. Buat folder dist dan salin isi build frontend ke dalamnya (termasuk hidden files)
+          mkdir -p deploy/dist
+          rsync -av frontend/dist/ deploy/dist/
+
+      - name: Deploy all files to FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          port: 21
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./deploy/
+          server-dir: ${{ secrets.FTP_SERVER_DIR }}
