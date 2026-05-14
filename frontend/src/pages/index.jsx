@@ -179,6 +179,22 @@ const SECTIONS = [
         image: "/wp/23.jpeg",
         downloadUrl: "#",
       },
+
+      {
+        title: "Ocean Sunset",
+        image: "/wp/24.jpeg",
+        downloadUrl: "#",
+      },
+      {
+        title: "Ocean Sunset",
+        image: "/wp/25.jpeg",
+        downloadUrl: "#",
+      },
+      {
+        title: "Ocean Sunset",
+        image: "/wp/26.jpeg",
+        downloadUrl: "#",
+      },
     ],
   },
   {
